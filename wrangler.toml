@@ -1,6 +1,19 @@
-#:schema node_modules/wrangler/config-schema.json
+# :schema node_modules/wrangler/config-schema.json
 name = "autodev"
+type = "javascript"
 compatibility_flags = ["nodejs_compat"]
 compatibility_date = "2024-07-01"
-pages_build_output_dir = "./build/client"
+pages_build_output_dir = "./build/client" # Ensure this is the correct directory for the output of the build
 send_metrics = false
+
+[build]
+  command = """
+    curl -fsSL https://get.pnpm.io/v6.16.js | node - add --global pnpm && \
+    pnpm install && \
+    pnpm run build
+  """
+  directory = "build/client"  # This should be where your static assets are generated
+
+# Optional: Add the "build" environment variable if you need specific settings (e.g., `NODE_ENV=production`)
+# [env]
+#   NODE_ENV = "production"
