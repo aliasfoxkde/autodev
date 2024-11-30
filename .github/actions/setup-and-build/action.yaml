@@ -1,5 +1,6 @@
 name: Setup and Build
 description: Generic setup action
+
 inputs:
   pnpm-version:
     required: false
@@ -8,25 +9,37 @@ inputs:
   node-version:
     required: false
     type: string
-    default: '20.15.1'
+    default: '18.18.0'
 
 runs:
   using: composite
-
   steps:
+    # Step 1: Set up pnpm
     - uses: pnpm/action-setup@v4
       with:
         version: ${{ inputs.pnpm-version }}
         run_install: false
 
+    # Step 2: Set up Node.js
     - name: Set Node.js version to ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: pnpm
+        cache: 'pnpm'
 
-    - name: Install dependencies and build project
-      shell: bash
+    # Step 3: Ensure pnpm is enabled and install dependencies
+    - name: Install dependencies
       run: |
+        corepack enable
+        corepack prepare pnpm@${{ inputs.pnpm-version }} --activate
         pnpm install
-        pnpm run build
+
+    # Step 4: Build the project using pnpm
+    - name: Build project
+      run: pnpm run build
+
+    # Optional: Deploy to Cloudflare Pages or upload to artifact
+    - name: Deploy to Cloudflare Pages (Optional)
+      uses: cloudflare/pages-action@v1
+      with:
+        directory: './build/client'  # Make sure this points to your build output folder
