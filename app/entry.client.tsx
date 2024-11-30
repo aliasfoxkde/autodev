@@ -3,5 +3,9 @@ import { startTransition } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 
 startTransition(() => {
-  hydrateRoot(document.getElementById('root')!, <RemixBrowser />);
+  hydrateRoot(document.getElementById('root')!, (
+    <div suppressHydrationWarning={true}>
+      <RemixBrowser />
+    </div>
+  ));
 });
