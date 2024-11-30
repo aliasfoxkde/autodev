@@ -18,7 +18,7 @@ export function getAPIKey(cloudflareEnv: Env, provider: string, userApiKeys?: Re
   // Fall back to environment variables
   switch (provider) {
     case 'Anthropic':
-      return env.ANTHROPIC_API_KEY || cloudflareEnv.ANTHROPIC_API_KEY;
+      return env.ANTHROPIC_API_KEY || cloudflareEnv.ANTHROPIC_API_KEY || context.ANTHROPIC_API_KEY;
     case 'OpenAI':
       return env.OPENAI_API_KEY || cloudflareEnv.OPENAI_API_KEY;
     case 'Google':
