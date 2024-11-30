@@ -5,9 +5,6 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const HydrationComponent = () => {
-  const [isHydrated, setIsHydrated] = useState(false);
-
 export default defineConfig((config) => {
   return {
     base: '/',
