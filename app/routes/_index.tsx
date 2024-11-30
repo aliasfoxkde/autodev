@@ -14,10 +14,7 @@ export default function Index() {
   return (
     <div className="flex flex-col h-full w-full">
       <Header />
-      {/* Use suppressHydrationWarning here */}
-      <div suppressHydrationWarning={true}>
-        <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
-      </div>
+      <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
     </div>
   );
 }

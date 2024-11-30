@@ -8,6 +8,10 @@ import { atom, map } from 'nanostores';
 import React, { useEffect, memo, useState } from 'react';
 import process from 'vite-plugin-node-polyfills/shims/process';
 import { json } from '@remix-run/cloudflare';
+import { ClientOnly } from 'remix-utils/client-only';
+import Cookies from 'js-cookie';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { toast } from 'react-toastify';
 import { streamText as streamText$1, convertToCoreMessages, parseStreamPart, StreamingTextResponse } from 'ai';
 import { env } from 'node:process';
 import { createAnthropic } from '@ai-sdk/anthropic';
@@ -18,12 +22,8 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { createMistral } from '@ai-sdk/mistral';
 import { createCohere } from '@ai-sdk/cohere';
 import { defaultSchema } from 'rehype-sanitize';
-import { ClientOnly } from 'remix-utils/client-only';
-import Cookies from 'js-cookie';
-import * as Tooltip from '@radix-ui/react-tooltip';
-import { toast } from 'react-toastify';
 
-const tailwindReset = "/assets/tailwind-compat-CC20SAMN.css";
+const tailwindReset = "/h5/assets/tailwind-compat-CC20SAMN.css";
 
 const DEFAULT_THEME = "light";
 const themeStore = atom(initStore());
@@ -45,11 +45,11 @@ function _stripIndents(value) {
   return value.split("\n").map((line) => line.trim()).join("\n").trimStart().replace(/[\r\n]$/, "");
 }
 
-const reactToastifyStyles = "/assets/ReactToastify-CYivYX3d.css";
+const reactToastifyStyles = "/h5/assets/ReactToastify-CYivYX3d.css";
 
-const globalStyles = "/assets/index-CPTzpSUP.css";
+const globalStyles = "/h5/assets/index-CPTzpSUP.css";
 
-const xtermStyles = "/assets/xterm-lQO2bNqs.css";
+const xtermStyles = "/h5/assets/xterm-lQO2bNqs.css";
 
 const links = () => [
   {
@@ -519,6 +519,567 @@ async function handleRequest(request, responseStatusCode, responseHeaders, remix
 const entryServer = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: handleRequest
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const Menu = undefined;
+
+function classNames(...args) {
+  let classes = "";
+  for (const arg of args) {
+    classes = appendClass(classes, parseValue(arg));
+  }
+  return classes;
+}
+function parseValue(arg) {
+  if (typeof arg === "string" || typeof arg === "number") {
+    return arg;
+  }
+  if (typeof arg !== "object") {
+    return "";
+  }
+  if (Array.isArray(arg)) {
+    return classNames(...arg);
+  }
+  let classes = "";
+  for (const key in arg) {
+    if (arg[key]) {
+      classes = appendClass(classes, key);
+    }
+  }
+  return classes;
+}
+function appendClass(value, newClass) {
+  if (!newClass) {
+    return value;
+  }
+  if (value) {
+    return value + " " + newClass;
+  }
+  return value + newClass;
+}
+
+const IconButton = memo(
+  ({
+    icon,
+    size = "xl",
+    className,
+    iconClassName,
+    disabledClassName,
+    disabled = false,
+    title,
+    onClick,
+    children
+  }) => {
+    return /* @__PURE__ */ jsx(
+      "button",
+      {
+        className: classNames(
+          "flex items-center text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed",
+          {
+            [classNames("opacity-30", disabledClassName)]: disabled
+          },
+          className
+        ),
+        title,
+        disabled,
+        onClick: (event) => {
+          if (disabled) {
+            return;
+          }
+          onClick?.(event);
+        },
+        children: children ? children : /* @__PURE__ */ jsx("div", { className: classNames(icon, getIconSize(size), iconClassName) })
+      }
+    );
+  }
+);
+function getIconSize(size) {
+  if (size === "sm") {
+    return "text-sm";
+  } else if (size === "md") {
+    return "text-md";
+  } else if (size === "lg") {
+    return "text-lg";
+  } else if (size === "xl") {
+    return "text-xl";
+  } else {
+    return "text-2xl";
+  }
+}
+
+const Workbench = undefined;
+
+const Messages = undefined;
+
+const SendButton = undefined;
+
+const APIKeyManager = ({ provider, apiKey, setApiKey }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempKey, setTempKey] = useState(apiKey);
+  const handleSave = () => {
+    setApiKey(tempKey);
+    setIsEditing(false);
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-start sm:items-center mt-2 mb-2 flex-col sm:flex-row", children: [
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("span", { className: "text-sm text-bolt-elements-textSecondary", children: [
+        provider?.name,
+        " API Key:"
+      ] }),
+      !isEditing && /* @__PURE__ */ jsxs("div", { className: "flex items-center mb-4", children: [
+        /* @__PURE__ */ jsx("span", { className: "flex-1 text-xs text-bolt-elements-textPrimary mr-2", children: apiKey ? "••••••••" : "Not set (will still work if set in .env file)" }),
+        /* @__PURE__ */ jsx(IconButton, { onClick: () => setIsEditing(true), title: "Edit API Key", children: /* @__PURE__ */ jsx("div", { className: "i-ph:pencil-simple" }) })
+      ] })
+    ] }),
+    isEditing ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mt-2", children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "password",
+          value: tempKey,
+          placeholder: "Your API Key",
+          onChange: (e) => setTempKey(e.target.value),
+          className: "flex-1 px-2 py-1 text-xs lg:text-sm rounded border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus"
+        }
+      ),
+      /* @__PURE__ */ jsx(IconButton, { onClick: handleSave, title: "Save API Key", children: /* @__PURE__ */ jsx("div", { className: "i-ph:check" }) }),
+      /* @__PURE__ */ jsx(IconButton, { onClick: () => setIsEditing(false), title: "Cancel", children: /* @__PURE__ */ jsx("div", { className: "i-ph:x" }) })
+    ] }) : /* @__PURE__ */ jsx(Fragment, { children: provider?.getApiKeyLink && /* @__PURE__ */ jsxs(IconButton, { className: "ml-auto", onClick: () => window.open(provider?.getApiKeyLink), title: "Edit API Key", children: [
+      /* @__PURE__ */ jsx("span", { className: "mr-2 text-xs lg:text-sm", children: provider?.labelForGetApiKey || "Get API Key" }),
+      /* @__PURE__ */ jsx("div", { className: provider?.icon || "i-ph:key" })
+    ] }) })
+  ] });
+};
+
+const BaseChat$1 = "_";
+const Chat$1 = "a";
+const styles = {
+	BaseChat: BaseChat$1,
+	Chat: Chat$1
+};
+
+const WithTooltip = ({
+  tooltip,
+  children,
+  sideOffset = 5,
+  className = "",
+  arrowClassName = "",
+  tooltipStyle = {}
+}) => {
+  return /* @__PURE__ */ jsxs(Tooltip.Root, { children: [
+    /* @__PURE__ */ jsx(Tooltip.Trigger, { asChild: true, children }),
+    /* @__PURE__ */ jsx(Tooltip.Portal, { children: /* @__PURE__ */ jsxs(
+      Tooltip.Content,
+      {
+        className: `bg-bolt-elements-tooltip-background text-bolt-elements-textPrimary px-3 py-2 rounded-lg text-sm shadow-lg ${className}`,
+        sideOffset,
+        style: { zIndex: 2e3, backgroundColor: "white", ...tooltipStyle },
+        children: [
+          tooltip,
+          /* @__PURE__ */ jsx(Tooltip.Arrow, { className: `fill-bolt-elements-tooltip-background ${arrowClassName}` })
+        ]
+      }
+    ) })
+  ] });
+};
+
+const ExportChatButton = ({ exportChat }) => {
+  return /* @__PURE__ */ jsx(WithTooltip, { tooltip: "Export Chat", children: /* @__PURE__ */ jsx(IconButton, { title: "Export Chat", onClick: () => exportChat?.(), children: /* @__PURE__ */ jsx("div", { className: "i-ph:download-simple text-xl" }) }) });
+};
+
+function ImportButton(importChat) {
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center flex-1 p-4", children: [
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        type: "file",
+        id: "chat-import",
+        className: "hidden",
+        accept: ".json",
+        onChange: async (e) => {
+          const file = e.target.files?.[0];
+          if (file && importChat) {
+            try {
+              const reader = new FileReader();
+              reader.onload = async (e2) => {
+                try {
+                  const content = e2.target?.result;
+                  const data = JSON.parse(content);
+                  if (!Array.isArray(data.messages)) {
+                    toast.error("Invalid chat file format");
+                  }
+                  await importChat(data.description, data.messages);
+                  toast.success("Chat imported successfully");
+                } catch (error) {
+                  if (error instanceof Error) {
+                    toast.error("Failed to parse chat file: " + error.message);
+                  } else {
+                    toast.error("Failed to parse chat file");
+                  }
+                }
+              };
+              reader.onerror = () => toast.error("Failed to read chat file");
+              reader.readAsText(file);
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Failed to import chat");
+            }
+            e.target.value = "";
+          } else {
+            toast.error("Something went wrong");
+          }
+        }
+      }
+    ),
+    /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center gap-4 max-w-2xl text-center", children: /* @__PURE__ */ jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxs(
+      "button",
+      {
+        onClick: () => {
+          const input = document.getElementById("chat-import");
+          input?.click();
+        },
+        className: "px-4 py-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-3 transition-all flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx("div", { className: "i-ph:upload-simple" }),
+          "Import Chat"
+        ]
+      }
+    ) }) })
+  ] });
+}
+
+const EXAMPLE_PROMPTS = [
+  { text: "Build a todo app in React using Tailwind" },
+  { text: "Build a simple blog using Astro" },
+  { text: "Create a cookie consent form using Material UI" },
+  { text: "Make a space invaders game" },
+  { text: "How do I center a div?" }
+];
+function ExamplePrompts(sendMessage) {
+  return /* @__PURE__ */ jsx("div", { id: "examples", className: "relative w-full max-w-xl mx-auto mt-8 flex justify-center", children: /* @__PURE__ */ jsx("div", { className: "flex flex-col space-y-2 [mask-image:linear-gradient(to_bottom,black_0%,transparent_180%)] hover:[mask-image:none]", children: EXAMPLE_PROMPTS.map((examplePrompt, index) => {
+    return /* @__PURE__ */ jsxs(
+      "button",
+      {
+        onClick: (event) => {
+          sendMessage?.(event, examplePrompt.text);
+        },
+        className: "group flex items-center w-full gap-2 justify-center bg-transparent text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary transition-theme",
+        children: [
+          examplePrompt.text,
+          /* @__PURE__ */ jsx("div", { className: "i-ph:arrow-bend-down-left" })
+        ]
+      },
+      index
+    );
+  }) }) });
+}
+
+const ModelSelector = ({ model, setModel, provider, setProvider, modelList, providerList: providerList2, apiKeys }) => {
+  return /* @__PURE__ */ jsxs("div", { className: "mb-2 flex gap-2 flex-col sm:flex-row", children: [
+    /* @__PURE__ */ jsx(
+      "select",
+      {
+        value: provider?.name,
+        onChange: (e) => {
+          setProvider(providerList2.find((p) => p.name === e.target.value));
+          const firstModel = [...modelList].find((m) => m.provider == e.target.value);
+          setModel(firstModel ? firstModel.name : "");
+        },
+        className: "flex-1 p-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus transition-all",
+        children: providerList2.map((provider2) => /* @__PURE__ */ jsx("option", { value: provider2.name, children: provider2.name }, provider2.name))
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "select",
+      {
+        value: model,
+        onChange: (e) => setModel(e.target.value),
+        className: "flex-1 p-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus transition-all lg:max-w-[70%] ",
+        children: [...modelList].filter((e) => e.provider == provider?.name && e.name).map((modelOption) => /* @__PURE__ */ jsx("option", { value: modelOption.name, children: modelOption.label }, modelOption.name))
+      },
+      provider?.name
+    )
+  ] });
+};
+const TEXTAREA_MIN_HEIGHT = 76;
+const BaseChat = React.forwardRef(
+  ({
+    textareaRef,
+    messageRef,
+    scrollRef,
+    showChat = true,
+    chatStarted = false,
+    isStreaming = false,
+    enhancingPrompt = false,
+    promptEnhanced = false,
+    messages,
+    input = "",
+    model,
+    setModel,
+    provider,
+    setProvider,
+    sendMessage,
+    handleInputChange,
+    enhancePrompt,
+    handleStop,
+    importChat,
+    exportChat
+  }, ref) => {
+    const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
+    const [apiKeys, setApiKeys] = useState({});
+    const [modelList, setModelList] = useState(MODEL_LIST);
+    useEffect(() => {
+      try {
+        const storedApiKeys = Cookies.get("apiKeys");
+        if (storedApiKeys) {
+          const parsedKeys = JSON.parse(storedApiKeys);
+          if (typeof parsedKeys === "object" && parsedKeys !== null) {
+            setApiKeys(parsedKeys);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading API keys from cookies:", error);
+        Cookies.remove("apiKeys");
+      }
+      initializeModelList().then((modelList2) => {
+        setModelList(modelList2);
+      });
+    }, []);
+    const updateApiKey = (provider2, key) => {
+      try {
+        const updatedApiKeys = { ...apiKeys, [provider2]: key };
+        setApiKeys(updatedApiKeys);
+        Cookies.set("apiKeys", JSON.stringify(updatedApiKeys), {
+          expires: 30,
+          // 30 days
+          secure: true,
+          // Only send over HTTPS
+          sameSite: "strict",
+          // Protect against CSRF
+          path: "/"
+          // Accessible across the site
+        });
+      } catch (error) {
+        console.error("Error saving API keys to cookies:", error);
+      }
+    };
+    const baseChat = /* @__PURE__ */ jsxs(
+      "div",
+      {
+        ref,
+        className: classNames(
+          styles.BaseChat,
+          "relative flex flex-col lg:flex-row h-full w-full overflow-hidden bg-bolt-elements-background-depth-1"
+        ),
+        "data-chat-visible": showChat,
+        children: [
+          /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(Menu, {}) }),
+          /* @__PURE__ */ jsxs("div", { ref: scrollRef, className: "flex flex-col lg:flex-row overflow-y-auto w-full h-full", children: [
+            /* @__PURE__ */ jsxs("div", { className: classNames(styles.Chat, "flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full"), children: [
+              !chatStarted && /* @__PURE__ */ jsxs("div", { id: "intro", className: "mt-[26vh] max-w-chat mx-auto text-center px-4 lg:px-0", children: [
+                /* @__PURE__ */ jsx("h1", { className: "text-3xl lg:text-6xl font-bold text-bolt-elements-textPrimary mb-4 animate-fade-in", children: "Where ideas begin" }),
+                /* @__PURE__ */ jsx("p", { className: "text-md lg:text-xl mb-8 text-bolt-elements-textSecondary animate-fade-in animation-delay-200", children: "Bring ideas to life in seconds or get help on existing projects." })
+              ] }),
+              /* @__PURE__ */ jsxs(
+                "div",
+                {
+                  className: classNames("pt-6 px-2 sm:px-6", {
+                    "h-full flex flex-col": chatStarted
+                  }),
+                  children: [
+                    /* @__PURE__ */ jsx(ClientOnly, { children: () => {
+                      return chatStarted ? /* @__PURE__ */ jsx(
+                        Messages,
+                        {
+                          ref: messageRef,
+                          className: "flex flex-col w-full flex-1 max-w-chat pb-6 mx-auto z-1",
+                          messages,
+                          isStreaming
+                        }
+                      ) : null;
+                    } }),
+                    /* @__PURE__ */ jsxs(
+                      "div",
+                      {
+                        className: classNames(
+                          " bg-bolt-elements-background-depth-2 p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt mb-6",
+                          {
+                            "sticky bottom-2": chatStarted
+                          }
+                        ),
+                        children: [
+                          /* @__PURE__ */ jsx(
+                            ModelSelector,
+                            {
+                              model,
+                              setModel,
+                              modelList,
+                              provider,
+                              setProvider,
+                              providerList: PROVIDER_LIST,
+                              apiKeys
+                            },
+                            provider?.name + ":" + modelList.length
+                          ),
+                          provider && /* @__PURE__ */ jsx(
+                            APIKeyManager,
+                            {
+                              provider,
+                              apiKey: apiKeys[provider.name] || "",
+                              setApiKey: (key) => updateApiKey(provider.name, key)
+                            }
+                          ),
+                          /* @__PURE__ */ jsxs(
+                            "div",
+                            {
+                              className: classNames(
+                                "shadow-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden transition-all"
+                              ),
+                              children: [
+                                /* @__PURE__ */ jsx(
+                                  "textarea",
+                                  {
+                                    ref: textareaRef,
+                                    className: `w-full pl-4 pt-4 pr-16 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none resize-none text-md text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary bg-transparent transition-all`,
+                                    onKeyDown: (event) => {
+                                      if (event.key === "Enter") {
+                                        if (event.shiftKey) {
+                                          return;
+                                        }
+                                        event.preventDefault();
+                                        sendMessage?.(event);
+                                      }
+                                    },
+                                    value: input,
+                                    onChange: (event) => {
+                                      handleInputChange?.(event);
+                                    },
+                                    style: {
+                                      minHeight: TEXTAREA_MIN_HEIGHT,
+                                      maxHeight: TEXTAREA_MAX_HEIGHT
+                                    },
+                                    placeholder: "How can Bolt help you today?",
+                                    translate: "no"
+                                  }
+                                ),
+                                /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(
+                                  SendButton,
+                                  {
+                                    show: input.length > 0 || isStreaming,
+                                    isStreaming,
+                                    onClick: (event) => {
+                                      if (isStreaming) {
+                                        handleStop?.();
+                                        return;
+                                      }
+                                      sendMessage?.(event);
+                                    }
+                                  }
+                                ) }),
+                                /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center text-sm p-4 pt-2", children: [
+                                  /* @__PURE__ */ jsxs("div", { className: "flex gap-1 items-center", children: [
+                                    /* @__PURE__ */ jsx(
+                                      IconButton,
+                                      {
+                                        title: "Enhance prompt",
+                                        disabled: input.length === 0 || enhancingPrompt,
+                                        className: classNames("transition-all", {
+                                          "opacity-100!": enhancingPrompt,
+                                          "text-bolt-elements-item-contentAccent! pr-1.5 enabled:hover:bg-bolt-elements-item-backgroundAccent!": promptEnhanced
+                                        }),
+                                        onClick: () => enhancePrompt?.(),
+                                        children: enhancingPrompt ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                                          /* @__PURE__ */ jsx("div", { className: "i-svg-spinners:90-ring-with-bg text-bolt-elements-loader-progress text-xl animate-spin" }),
+                                          /* @__PURE__ */ jsx("div", { className: "ml-1.5", children: "Enhancing prompt..." })
+                                        ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                                          /* @__PURE__ */ jsx("div", { className: "i-bolt:stars text-xl" }),
+                                          promptEnhanced && /* @__PURE__ */ jsx("div", { className: "ml-1.5", children: "Prompt enhanced" })
+                                        ] })
+                                      }
+                                    ),
+                                    chatStarted && /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(ExportChatButton, { exportChat }) })
+                                  ] }),
+                                  input.length > 3 ? /* @__PURE__ */ jsxs("div", { className: "text-xs text-bolt-elements-textTertiary", children: [
+                                    "Use ",
+                                    /* @__PURE__ */ jsx("kbd", { className: "kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2", children: "Shift" }),
+                                    " +",
+                                    " ",
+                                    /* @__PURE__ */ jsx("kbd", { className: "kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2", children: "Return" }),
+                                    " for a new line"
+                                  ] }) : null
+                                ] })
+                              ]
+                            }
+                          )
+                        ]
+                      }
+                    )
+                  ]
+                }
+              ),
+              !chatStarted && ImportButton(importChat),
+              !chatStarted && ExamplePrompts(sendMessage)
+            ] }),
+            /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(Workbench, { chatStarted, isStreaming }) })
+          ] })
+        ]
+      }
+    );
+    return /* @__PURE__ */ jsx(Tooltip.Provider, { delayDuration: 200, children: baseChat });
+  }
+);
+
+const Chat = undefined;
+
+const chatStore = map({
+  started: false,
+  aborted: false,
+  showChat: true
+});
+
+const HeaderActionButtons = undefined;
+
+const ChatDescription = undefined;
+
+function Header() {
+  const chat = useStore(chatStore);
+  return /* @__PURE__ */ jsxs(
+    "header",
+    {
+      className: classNames(
+        "flex items-center bg-bolt-elements-background-depth-1 p-5 border-b h-[var(--header-height)]",
+        {
+          "border-transparent": !chat.started,
+          "border-bolt-elements-borderColor": chat.started
+        }
+      ),
+      children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 z-logo text-bolt-elements-textPrimary cursor-pointer", children: [
+          /* @__PURE__ */ jsx("div", { className: "i-ph:sidebar-simple-duotone text-xl" }),
+          /* @__PURE__ */ jsx("a", { href: "/", className: "text-2xl font-semibold text-accent flex items-center", children: /* @__PURE__ */ jsx("span", { className: "i-bolt:logo-text?mask w-[46px] inline-block" }) })
+        ] }),
+        /* @__PURE__ */ jsx("span", { className: "flex-1 px-4 truncate text-center text-bolt-elements-textPrimary", children: /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(ChatDescription, {}) }) }),
+        chat.started && /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx("div", { className: "mr-1", children: /* @__PURE__ */ jsx(HeaderActionButtons, {}) }) })
+      ]
+    }
+  );
+}
+
+const meta$1 = () => {
+  return [{ title: "Bolt" }, { name: "description", content: "Talk with Bolt, an AI assistant from StackBlitz" }];
+};
+const loader$3 = () => json({});
+function Index$1() {
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col h-full w-full", children: [
+    /* @__PURE__ */ jsx(Header, {}),
+    /* @__PURE__ */ jsx(ClientOnly, { fallback: /* @__PURE__ */ jsx(BaseChat, {}), children: () => /* @__PURE__ */ jsx(Chat, {}) })
+  ] });
+}
+
+const route1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: Index$1,
+  loader: loader$3,
+  meta: meta$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function getAPIKey(cloudflareEnv, provider, userApiKeys) {
@@ -1205,7 +1766,7 @@ async function enhancerAction({ context, request }) {
   }
 }
 
-const route1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const route2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   action: action$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1214,7 +1775,7 @@ async function loader$2() {
   return json(MODEL_LIST);
 }
 
-const route2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const route3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   loader: loader$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1334,553 +1895,10 @@ async function chatAction({ context, request }) {
   }
 }
 
-const route3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const route4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   action
 }, Symbol.toStringTag, { value: 'Module' }));
-
-const Menu = undefined;
-
-function classNames(...args) {
-  let classes = "";
-  for (const arg of args) {
-    classes = appendClass(classes, parseValue(arg));
-  }
-  return classes;
-}
-function parseValue(arg) {
-  if (typeof arg === "string" || typeof arg === "number") {
-    return arg;
-  }
-  if (typeof arg !== "object") {
-    return "";
-  }
-  if (Array.isArray(arg)) {
-    return classNames(...arg);
-  }
-  let classes = "";
-  for (const key in arg) {
-    if (arg[key]) {
-      classes = appendClass(classes, key);
-    }
-  }
-  return classes;
-}
-function appendClass(value, newClass) {
-  if (!newClass) {
-    return value;
-  }
-  if (value) {
-    return value + " " + newClass;
-  }
-  return value + newClass;
-}
-
-const IconButton = memo(
-  ({
-    icon,
-    size = "xl",
-    className,
-    iconClassName,
-    disabledClassName,
-    disabled = false,
-    title,
-    onClick,
-    children
-  }) => {
-    return /* @__PURE__ */ jsx(
-      "button",
-      {
-        className: classNames(
-          "flex items-center text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed",
-          {
-            [classNames("opacity-30", disabledClassName)]: disabled
-          },
-          className
-        ),
-        title,
-        disabled,
-        onClick: (event) => {
-          if (disabled) {
-            return;
-          }
-          onClick?.(event);
-        },
-        children: children ? children : /* @__PURE__ */ jsx("div", { className: classNames(icon, getIconSize(size), iconClassName) })
-      }
-    );
-  }
-);
-function getIconSize(size) {
-  if (size === "sm") {
-    return "text-sm";
-  } else if (size === "md") {
-    return "text-md";
-  } else if (size === "lg") {
-    return "text-lg";
-  } else if (size === "xl") {
-    return "text-xl";
-  } else {
-    return "text-2xl";
-  }
-}
-
-const Workbench = undefined;
-
-const Messages = undefined;
-
-const SendButton = undefined;
-
-const APIKeyManager = ({ provider, apiKey, setApiKey }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempKey, setTempKey] = useState(apiKey);
-  const handleSave = () => {
-    setApiKey(tempKey);
-    setIsEditing(false);
-  };
-  return /* @__PURE__ */ jsxs("div", { className: "flex items-start sm:items-center mt-2 mb-2 flex-col sm:flex-row", children: [
-    /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsxs("span", { className: "text-sm text-bolt-elements-textSecondary", children: [
-        provider?.name,
-        " API Key:"
-      ] }),
-      !isEditing && /* @__PURE__ */ jsxs("div", { className: "flex items-center mb-4", children: [
-        /* @__PURE__ */ jsx("span", { className: "flex-1 text-xs text-bolt-elements-textPrimary mr-2", children: apiKey ? "••••••••" : "Not set (will still work if set in .env file)" }),
-        /* @__PURE__ */ jsx(IconButton, { onClick: () => setIsEditing(true), title: "Edit API Key", children: /* @__PURE__ */ jsx("div", { className: "i-ph:pencil-simple" }) })
-      ] })
-    ] }),
-    isEditing ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mt-2", children: [
-      /* @__PURE__ */ jsx(
-        "input",
-        {
-          type: "password",
-          value: tempKey,
-          placeholder: "Your API Key",
-          onChange: (e) => setTempKey(e.target.value),
-          className: "flex-1 px-2 py-1 text-xs lg:text-sm rounded border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus"
-        }
-      ),
-      /* @__PURE__ */ jsx(IconButton, { onClick: handleSave, title: "Save API Key", children: /* @__PURE__ */ jsx("div", { className: "i-ph:check" }) }),
-      /* @__PURE__ */ jsx(IconButton, { onClick: () => setIsEditing(false), title: "Cancel", children: /* @__PURE__ */ jsx("div", { className: "i-ph:x" }) })
-    ] }) : /* @__PURE__ */ jsx(Fragment, { children: provider?.getApiKeyLink && /* @__PURE__ */ jsxs(IconButton, { className: "ml-auto", onClick: () => window.open(provider?.getApiKeyLink), title: "Edit API Key", children: [
-      /* @__PURE__ */ jsx("span", { className: "mr-2 text-xs lg:text-sm", children: provider?.labelForGetApiKey || "Get API Key" }),
-      /* @__PURE__ */ jsx("div", { className: provider?.icon || "i-ph:key" })
-    ] }) })
-  ] });
-};
-
-const BaseChat$1 = "_";
-const Chat$1 = "a";
-const styles = {
-	BaseChat: BaseChat$1,
-	Chat: Chat$1
-};
-
-const WithTooltip = ({
-  tooltip,
-  children,
-  sideOffset = 5,
-  className = "",
-  arrowClassName = "",
-  tooltipStyle = {}
-}) => {
-  return /* @__PURE__ */ jsxs(Tooltip.Root, { children: [
-    /* @__PURE__ */ jsx(Tooltip.Trigger, { asChild: true, children }),
-    /* @__PURE__ */ jsx(Tooltip.Portal, { children: /* @__PURE__ */ jsxs(
-      Tooltip.Content,
-      {
-        className: `bg-bolt-elements-tooltip-background text-bolt-elements-textPrimary px-3 py-2 rounded-lg text-sm shadow-lg ${className}`,
-        sideOffset,
-        style: { zIndex: 2e3, backgroundColor: "white", ...tooltipStyle },
-        children: [
-          tooltip,
-          /* @__PURE__ */ jsx(Tooltip.Arrow, { className: `fill-bolt-elements-tooltip-background ${arrowClassName}` })
-        ]
-      }
-    ) })
-  ] });
-};
-
-const ExportChatButton = ({ exportChat }) => {
-  return /* @__PURE__ */ jsx(WithTooltip, { tooltip: "Export Chat", children: /* @__PURE__ */ jsx(IconButton, { title: "Export Chat", onClick: () => exportChat?.(), children: /* @__PURE__ */ jsx("div", { className: "i-ph:download-simple text-xl" }) }) });
-};
-
-function ImportButton(importChat) {
-  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center flex-1 p-4", children: [
-    /* @__PURE__ */ jsx(
-      "input",
-      {
-        type: "file",
-        id: "chat-import",
-        className: "hidden",
-        accept: ".json",
-        onChange: async (e) => {
-          const file = e.target.files?.[0];
-          if (file && importChat) {
-            try {
-              const reader = new FileReader();
-              reader.onload = async (e2) => {
-                try {
-                  const content = e2.target?.result;
-                  const data = JSON.parse(content);
-                  if (!Array.isArray(data.messages)) {
-                    toast.error("Invalid chat file format");
-                  }
-                  await importChat(data.description, data.messages);
-                  toast.success("Chat imported successfully");
-                } catch (error) {
-                  if (error instanceof Error) {
-                    toast.error("Failed to parse chat file: " + error.message);
-                  } else {
-                    toast.error("Failed to parse chat file");
-                  }
-                }
-              };
-              reader.onerror = () => toast.error("Failed to read chat file");
-              reader.readAsText(file);
-            } catch (error) {
-              toast.error(error instanceof Error ? error.message : "Failed to import chat");
-            }
-            e.target.value = "";
-          } else {
-            toast.error("Something went wrong");
-          }
-        }
-      }
-    ),
-    /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center gap-4 max-w-2xl text-center", children: /* @__PURE__ */ jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxs(
-      "button",
-      {
-        onClick: () => {
-          const input = document.getElementById("chat-import");
-          input?.click();
-        },
-        className: "px-4 py-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-3 transition-all flex items-center gap-2",
-        children: [
-          /* @__PURE__ */ jsx("div", { className: "i-ph:upload-simple" }),
-          "Import Chat"
-        ]
-      }
-    ) }) })
-  ] });
-}
-
-const EXAMPLE_PROMPTS = [
-  { text: "Build a todo app in React using Tailwind" },
-  { text: "Build a simple blog using Astro" },
-  { text: "Create a cookie consent form using Material UI" },
-  { text: "Make a space invaders game" },
-  { text: "How do I center a div?" }
-];
-function ExamplePrompts(sendMessage) {
-  return /* @__PURE__ */ jsx("div", { id: "examples", className: "relative w-full max-w-xl mx-auto mt-8 flex justify-center", children: /* @__PURE__ */ jsx("div", { className: "flex flex-col space-y-2 [mask-image:linear-gradient(to_bottom,black_0%,transparent_180%)] hover:[mask-image:none]", children: EXAMPLE_PROMPTS.map((examplePrompt, index) => {
-    return /* @__PURE__ */ jsxs(
-      "button",
-      {
-        onClick: (event) => {
-          sendMessage?.(event, examplePrompt.text);
-        },
-        className: "group flex items-center w-full gap-2 justify-center bg-transparent text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary transition-theme",
-        children: [
-          examplePrompt.text,
-          /* @__PURE__ */ jsx("div", { className: "i-ph:arrow-bend-down-left" })
-        ]
-      },
-      index
-    );
-  }) }) });
-}
-
-const ModelSelector = ({ model, setModel, provider, setProvider, modelList, providerList: providerList2, apiKeys }) => {
-  return /* @__PURE__ */ jsxs("div", { className: "mb-2 flex gap-2 flex-col sm:flex-row", children: [
-    /* @__PURE__ */ jsx(
-      "select",
-      {
-        value: provider?.name,
-        onChange: (e) => {
-          setProvider(providerList2.find((p) => p.name === e.target.value));
-          const firstModel = [...modelList].find((m) => m.provider == e.target.value);
-          setModel(firstModel ? firstModel.name : "");
-        },
-        className: "flex-1 p-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus transition-all",
-        children: providerList2.map((provider2) => /* @__PURE__ */ jsx("option", { value: provider2.name, children: provider2.name }, provider2.name))
-      }
-    ),
-    /* @__PURE__ */ jsx(
-      "select",
-      {
-        value: model,
-        onChange: (e) => setModel(e.target.value),
-        className: "flex-1 p-2 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus transition-all lg:max-w-[70%] ",
-        children: [...modelList].filter((e) => e.provider == provider?.name && e.name).map((modelOption) => /* @__PURE__ */ jsx("option", { value: modelOption.name, children: modelOption.label }, modelOption.name))
-      },
-      provider?.name
-    )
-  ] });
-};
-const TEXTAREA_MIN_HEIGHT = 76;
-const BaseChat = React.forwardRef(
-  ({
-    textareaRef,
-    messageRef,
-    scrollRef,
-    showChat = true,
-    chatStarted = false,
-    isStreaming = false,
-    enhancingPrompt = false,
-    promptEnhanced = false,
-    messages,
-    input = "",
-    model,
-    setModel,
-    provider,
-    setProvider,
-    sendMessage,
-    handleInputChange,
-    enhancePrompt,
-    handleStop,
-    importChat,
-    exportChat
-  }, ref) => {
-    const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
-    const [apiKeys, setApiKeys] = useState({});
-    const [modelList, setModelList] = useState(MODEL_LIST);
-    useEffect(() => {
-      try {
-        const storedApiKeys = Cookies.get("apiKeys");
-        if (storedApiKeys) {
-          const parsedKeys = JSON.parse(storedApiKeys);
-          if (typeof parsedKeys === "object" && parsedKeys !== null) {
-            setApiKeys(parsedKeys);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading API keys from cookies:", error);
-        Cookies.remove("apiKeys");
-      }
-      initializeModelList().then((modelList2) => {
-        setModelList(modelList2);
-      });
-    }, []);
-    const updateApiKey = (provider2, key) => {
-      try {
-        const updatedApiKeys = { ...apiKeys, [provider2]: key };
-        setApiKeys(updatedApiKeys);
-        Cookies.set("apiKeys", JSON.stringify(updatedApiKeys), {
-          expires: 30,
-          // 30 days
-          secure: true,
-          // Only send over HTTPS
-          sameSite: "strict",
-          // Protect against CSRF
-          path: "/"
-          // Accessible across the site
-        });
-      } catch (error) {
-        console.error("Error saving API keys to cookies:", error);
-      }
-    };
-    const baseChat = /* @__PURE__ */ jsxs(
-      "div",
-      {
-        ref,
-        className: classNames(
-          styles.BaseChat,
-          "relative flex flex-col lg:flex-row h-full w-full overflow-hidden bg-bolt-elements-background-depth-1"
-        ),
-        "data-chat-visible": showChat,
-        children: [
-          /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(Menu, {}) }),
-          /* @__PURE__ */ jsxs("div", { ref: scrollRef, className: "flex flex-col lg:flex-row overflow-y-auto w-full h-full", children: [
-            /* @__PURE__ */ jsxs("div", { className: classNames(styles.Chat, "flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full"), children: [
-              !chatStarted && /* @__PURE__ */ jsxs("div", { id: "intro", className: "mt-[26vh] max-w-chat mx-auto text-center px-4 lg:px-0", children: [
-                /* @__PURE__ */ jsx("h1", { className: "text-3xl lg:text-6xl font-bold text-bolt-elements-textPrimary mb-4 animate-fade-in", children: "Where ideas begin" }),
-                /* @__PURE__ */ jsx("p", { className: "text-md lg:text-xl mb-8 text-bolt-elements-textSecondary animate-fade-in animation-delay-200", children: "Bring ideas to life in seconds or get help on existing projects." })
-              ] }),
-              /* @__PURE__ */ jsxs(
-                "div",
-                {
-                  className: classNames("pt-6 px-2 sm:px-6", {
-                    "h-full flex flex-col": chatStarted
-                  }),
-                  children: [
-                    /* @__PURE__ */ jsx(ClientOnly, { children: () => {
-                      return chatStarted ? /* @__PURE__ */ jsx(
-                        Messages,
-                        {
-                          ref: messageRef,
-                          className: "flex flex-col w-full flex-1 max-w-chat pb-6 mx-auto z-1",
-                          messages,
-                          isStreaming
-                        }
-                      ) : null;
-                    } }),
-                    /* @__PURE__ */ jsxs(
-                      "div",
-                      {
-                        className: classNames(
-                          " bg-bolt-elements-background-depth-2 p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt mb-6",
-                          {
-                            "sticky bottom-2": chatStarted
-                          }
-                        ),
-                        children: [
-                          /* @__PURE__ */ jsx(
-                            ModelSelector,
-                            {
-                              model,
-                              setModel,
-                              modelList,
-                              provider,
-                              setProvider,
-                              providerList: PROVIDER_LIST,
-                              apiKeys
-                            },
-                            provider?.name + ":" + modelList.length
-                          ),
-                          provider && /* @__PURE__ */ jsx(
-                            APIKeyManager,
-                            {
-                              provider,
-                              apiKey: apiKeys[provider.name] || "",
-                              setApiKey: (key) => updateApiKey(provider.name, key)
-                            }
-                          ),
-                          /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: classNames(
-                                "shadow-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden transition-all"
-                              ),
-                              children: [
-                                /* @__PURE__ */ jsx(
-                                  "textarea",
-                                  {
-                                    ref: textareaRef,
-                                    className: `w-full pl-4 pt-4 pr-16 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none resize-none text-md text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary bg-transparent transition-all`,
-                                    onKeyDown: (event) => {
-                                      if (event.key === "Enter") {
-                                        if (event.shiftKey) {
-                                          return;
-                                        }
-                                        event.preventDefault();
-                                        sendMessage?.(event);
-                                      }
-                                    },
-                                    value: input,
-                                    onChange: (event) => {
-                                      handleInputChange?.(event);
-                                    },
-                                    style: {
-                                      minHeight: TEXTAREA_MIN_HEIGHT,
-                                      maxHeight: TEXTAREA_MAX_HEIGHT
-                                    },
-                                    placeholder: "How can Bolt help you today?",
-                                    translate: "no"
-                                  }
-                                ),
-                                /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(
-                                  SendButton,
-                                  {
-                                    show: input.length > 0 || isStreaming,
-                                    isStreaming,
-                                    onClick: (event) => {
-                                      if (isStreaming) {
-                                        handleStop?.();
-                                        return;
-                                      }
-                                      sendMessage?.(event);
-                                    }
-                                  }
-                                ) }),
-                                /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center text-sm p-4 pt-2", children: [
-                                  /* @__PURE__ */ jsxs("div", { className: "flex gap-1 items-center", children: [
-                                    /* @__PURE__ */ jsx(
-                                      IconButton,
-                                      {
-                                        title: "Enhance prompt",
-                                        disabled: input.length === 0 || enhancingPrompt,
-                                        className: classNames("transition-all", {
-                                          "opacity-100!": enhancingPrompt,
-                                          "text-bolt-elements-item-contentAccent! pr-1.5 enabled:hover:bg-bolt-elements-item-backgroundAccent!": promptEnhanced
-                                        }),
-                                        onClick: () => enhancePrompt?.(),
-                                        children: enhancingPrompt ? /* @__PURE__ */ jsxs(Fragment, { children: [
-                                          /* @__PURE__ */ jsx("div", { className: "i-svg-spinners:90-ring-with-bg text-bolt-elements-loader-progress text-xl animate-spin" }),
-                                          /* @__PURE__ */ jsx("div", { className: "ml-1.5", children: "Enhancing prompt..." })
-                                        ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-                                          /* @__PURE__ */ jsx("div", { className: "i-bolt:stars text-xl" }),
-                                          promptEnhanced && /* @__PURE__ */ jsx("div", { className: "ml-1.5", children: "Prompt enhanced" })
-                                        ] })
-                                      }
-                                    ),
-                                    chatStarted && /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(ExportChatButton, { exportChat }) })
-                                  ] }),
-                                  input.length > 3 ? /* @__PURE__ */ jsxs("div", { className: "text-xs text-bolt-elements-textTertiary", children: [
-                                    "Use ",
-                                    /* @__PURE__ */ jsx("kbd", { className: "kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2", children: "Shift" }),
-                                    " +",
-                                    " ",
-                                    /* @__PURE__ */ jsx("kbd", { className: "kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2", children: "Return" }),
-                                    " for a new line"
-                                  ] }) : null
-                                ] })
-                              ]
-                            }
-                          )
-                        ]
-                      }
-                    )
-                  ]
-                }
-              ),
-              !chatStarted && ImportButton(importChat),
-              !chatStarted && ExamplePrompts(sendMessage)
-            ] }),
-            /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(Workbench, { chatStarted, isStreaming }) })
-          ] })
-        ]
-      }
-    );
-    return /* @__PURE__ */ jsx(Tooltip.Provider, { delayDuration: 200, children: baseChat });
-  }
-);
-
-const Chat = undefined;
-
-const chatStore = map({
-  started: false,
-  aborted: false,
-  showChat: true
-});
-
-const HeaderActionButtons = undefined;
-
-const ChatDescription = undefined;
-
-function Header() {
-  const chat = useStore(chatStore);
-  return /* @__PURE__ */ jsxs(
-    "header",
-    {
-      className: classNames(
-        "flex items-center bg-bolt-elements-background-depth-1 p-5 border-b h-[var(--header-height)]",
-        {
-          "border-transparent": !chat.started,
-          "border-bolt-elements-borderColor": chat.started
-        }
-      ),
-      children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 z-logo text-bolt-elements-textPrimary cursor-pointer", children: [
-          /* @__PURE__ */ jsx("div", { className: "i-ph:sidebar-simple-duotone text-xl" }),
-          /* @__PURE__ */ jsx("a", { href: "/", className: "text-2xl font-semibold text-accent flex items-center", children: /* @__PURE__ */ jsx("span", { className: "i-bolt:logo-text?mask w-[46px] inline-block" }) })
-        ] }),
-        /* @__PURE__ */ jsx("span", { className: "flex-1 px-4 truncate text-center text-bolt-elements-textPrimary", children: /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx(ChatDescription, {}) }) }),
-        chat.started && /* @__PURE__ */ jsx(ClientOnly, { children: () => /* @__PURE__ */ jsx("div", { className: "mr-1", children: /* @__PURE__ */ jsx(HeaderActionButtons, {}) }) })
-      ]
-    }
-  );
-}
 
 const meta = () => {
   return [{ title: "Bolt" }, { name: "description", content: "Talk with Bolt, an AI assistant from StackBlitz" }];
@@ -1889,11 +1907,11 @@ const loader$1 = () => json({});
 function Index() {
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col h-full w-full", children: [
     /* @__PURE__ */ jsx(Header, {}),
-    /* @__PURE__ */ jsx(ClientOnly, { fallback: /* @__PURE__ */ jsx(BaseChat, {}), children: () => /* @__PURE__ */ jsx(Chat, {}) })
+    /* @__PURE__ */ jsx("div", { suppressHydrationWarning: true, children: /* @__PURE__ */ jsx(ClientOnly, { fallback: /* @__PURE__ */ jsx(BaseChat, {}), children: () => /* @__PURE__ */ jsx(Chat, {}) }) })
   ] });
 }
 
-const route5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const route6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: Index,
   loader: loader$1,
@@ -1904,13 +1922,13 @@ async function loader(args) {
   return json({ id: args.params.id });
 }
 
-const route4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const route5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: Index,
   loader
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','imports':['/assets/components-VKHSbR2h.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/root-DKlo4rZ4.js','imports':['/assets/components-VKHSbR2h.js','/assets/theme-9upYr29Y.js'],'css':['/assets/root-JKr2opdj.css']},'routes/api.enhancer':{'id':'routes/api.enhancer','parentId':'root','path':'api/enhancer','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/api.enhancer-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.models':{'id':'routes/api.models','parentId':'root','path':'api/models','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/api.models-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.chat':{'id':'routes/api.chat','parentId':'root','path':'api/chat','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/api.chat-l0sNRNKZ.js','imports':[],'css':[]},'routes/chat.$id':{'id':'routes/chat.$id','parentId':'root','path':'chat/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/chat._id-CCpVBBum.js','imports':['/assets/components-VKHSbR2h.js','/assets/theme-9upYr29Y.js','/assets/_index-UygSeUqk.js'],'css':['/assets/_index-D_NZK3VS.css']},'routes/_index':{'id':'routes/_index','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/assets/_index-Ce7APhdf.js','imports':['/assets/components-VKHSbR2h.js','/assets/theme-9upYr29Y.js','/assets/_index-UygSeUqk.js'],'css':['/assets/_index-D_NZK3VS.css']}},'url':'/assets/manifest-6fb0da02.js','version':'6fb0da02'};
+const serverManifest = {'entry':{'module':'/h5/assets/entry.client-DWrhDfeJ.js','imports':['/h5/assets/components-70CfOzzp.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/root-BJ6H5O9t.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js'],'css':['/h5/assets/root-JKr2opdj.css']},'routes/_index - Copy':{'id':'routes/_index - Copy','parentId':'root','path':undefined,'index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/_index - Copy-DeCUVWrz.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js'],'css':['/h5/assets/Header-D_NZK3VS.css']},'routes/api.enhancer':{'id':'routes/api.enhancer','parentId':'root','path':'api/enhancer','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.enhancer-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.models':{'id':'routes/api.models','parentId':'root','path':'api/models','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.models-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.chat':{'id':'routes/api.chat','parentId':'root','path':'api/chat','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.chat-l0sNRNKZ.js','imports':[],'css':[]},'routes/chat.$id':{'id':'routes/chat.$id','parentId':'root','path':'chat/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/chat._id-Dwg7_DhF.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js','/h5/assets/_index-DrKxFK0h.js'],'css':['/h5/assets/Header-D_NZK3VS.css']},'routes/_index':{'id':'routes/_index','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/_index-DrKxFK0h.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js'],'css':['/h5/assets/Header-D_NZK3VS.css']}},'url':'/h5/assets/manifest-61fc74b1.js','version':'61fc74b1'};
 
 /**
        * `mode` is only relevant for the old Remix compiler but
@@ -1921,7 +1939,7 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
       const basename = "/";
       const future = {"v3_fetcherPersist":true,"v3_relativeSplatPath":true,"v3_throwAbortReason":true,"unstable_singleFetch":false,"unstable_fogOfWar":false};
       const isSpaMode = false;
-      const publicPath = "/";
+      const publicPath = "/h5/";
       const entry = { module: entryServer };
       const routes = {
         "root": {
@@ -1932,13 +1950,21 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
           caseSensitive: undefined,
           module: route0
         },
+  "routes/_index - Copy": {
+          id: "routes/_index - Copy",
+          parentId: "root",
+          path: undefined,
+          index: undefined,
+          caseSensitive: undefined,
+          module: route1
+        },
   "routes/api.enhancer": {
           id: "routes/api.enhancer",
           parentId: "root",
           path: "api/enhancer",
           index: undefined,
           caseSensitive: undefined,
-          module: route1
+          module: route2
         },
   "routes/api.models": {
           id: "routes/api.models",
@@ -1946,7 +1972,7 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
           path: "api/models",
           index: undefined,
           caseSensitive: undefined,
-          module: route2
+          module: route3
         },
   "routes/api.chat": {
           id: "routes/api.chat",
@@ -1954,7 +1980,7 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
           path: "api/chat",
           index: undefined,
           caseSensitive: undefined,
-          module: route3
+          module: route4
         },
   "routes/chat.$id": {
           id: "routes/chat.$id",
@@ -1962,7 +1988,7 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
           path: "chat/:id",
           index: undefined,
           caseSensitive: undefined,
-          module: route4
+          module: route5
         },
   "routes/_index": {
           id: "routes/_index",
@@ -1970,7 +1996,7 @@ const serverManifest = {'entry':{'module':'/assets/entry.client-kdhVl-y0.js','im
           path: undefined,
           index: true,
           caseSensitive: undefined,
-          module: route5
+          module: route6
         }
       };
 
