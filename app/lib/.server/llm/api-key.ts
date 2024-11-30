@@ -18,7 +18,7 @@ export function getAPIKey(cloudflareEnv: Env, provider: string, userApiKeys?: Re
   // Fall back to environment variables
   switch (provider) {
     case 'Anthropic':
-      return env.ANTHROPIC_API_KEY || cloudflareEnv.ANTHROPIC_API_KEY || context.env.ANTHROPIC_API_KEY || ANTHROPIC_API_KEY;
+      return env.ANTHROPIC_API_KEY || cloudflareEnv.ANTHROPIC_API_KEY;
     case 'OpenAI':
       return env.OPENAI_API_KEY || cloudflareEnv.OPENAI_API_KEY;
     case 'Google':
@@ -26,7 +26,7 @@ export function getAPIKey(cloudflareEnv: Env, provider: string, userApiKeys?: Re
     case 'Groq':
       return env.GROQ_API_KEY || cloudflareEnv.GROQ_API_KEY;
     case 'HuggingFace':
-      return env.HuggingFace_API_KEY || cloudflareEnv.HuggingFace_API_KEY || context.env.HuggingFace_API_KEY || HuggingFace_API_KEY;
+      return env.HuggingFace_API_KEY || cloudflareEnv.HuggingFace_API_KEY;
     case 'OpenRouter':
       return env.OPEN_ROUTER_API_KEY || cloudflareEnv.OPEN_ROUTER_API_KEY;
     case 'Deepseek':
@@ -48,10 +48,6 @@ export function getAPIKey(cloudflareEnv: Env, provider: string, userApiKeys?: Re
 
 export function getBaseURL(cloudflareEnv: Env, provider: string) {
   switch (provider) {
-    case 'Anthropic':
-      return env.ANTHROPIC_API_KEY || cloudflareEnv.ANTHROPIC_API_KEY || context.env.ANTHROPIC_API_KEY || ANTHROPIC_API_KEY;
-    case 'HuggingFace':
-      return env.HuggingFace_API_KEY || cloudflareEnv.HuggingFace_API_KEY || context.env.HuggingFace_API_KEY || HuggingFace_API_KEY;
     case 'OpenAILike':
       return env.OPENAI_LIKE_API_BASE_URL || cloudflareEnv.OPENAI_LIKE_API_BASE_URL;
     case 'LMStudio':
