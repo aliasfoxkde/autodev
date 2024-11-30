@@ -1,11 +1,10 @@
 import { RemixBrowser } from '@remix-run/react';
 import { startTransition } from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 
 startTransition(() => {
-  hydrateRoot(document.getElementById('root')!, (
-    <div suppressHydrationWarning={true}>
-      <RemixBrowser />
-    </div>
-  ));
+  const root = document.getElementById('root');
+  if (root) {
+    createRoot(root).render(<RemixBrowser />);
+  }
 });
