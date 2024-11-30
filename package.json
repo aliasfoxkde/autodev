@@ -1,5 +1,6 @@
 {
-  "name": "bolt",
+  "name": "autodev",
+  "base": "https://github.com/aliasfoxkde/autodev",
   "description": "StackBlitz AI Agent",
   "private": true,
   "license": "MIT",
