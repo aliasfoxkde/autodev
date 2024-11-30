@@ -23,7 +23,7 @@ import { createMistral } from '@ai-sdk/mistral';
 import { createCohere } from '@ai-sdk/cohere';
 import { defaultSchema } from 'rehype-sanitize';
 
-const tailwindReset = "/h5/assets/tailwind-compat-CC20SAMN.css";
+const tailwindReset = "/assets/tailwind-compat-CC20SAMN.css";
 
 const DEFAULT_THEME = "light";
 const themeStore = atom(initStore());
@@ -45,11 +45,11 @@ function _stripIndents(value) {
   return value.split("\n").map((line) => line.trim()).join("\n").trimStart().replace(/[\r\n]$/, "");
 }
 
-const reactToastifyStyles = "/h5/assets/ReactToastify-CYivYX3d.css";
+const reactToastifyStyles = "/assets/ReactToastify-CYivYX3d.css";
 
-const globalStyles = "/h5/assets/index-CPTzpSUP.css";
+const globalStyles = "/assets/index-CPTzpSUP.css";
 
-const xtermStyles = "/h5/assets/xterm-lQO2bNqs.css";
+const xtermStyles = "/assets/xterm-lQO2bNqs.css";
 
 const links = () => [
   {
@@ -118,6 +118,7 @@ const route0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   links
 }, Symbol.toStringTag, { value: 'Module' }));
 
+var define_import_meta_env_default = { BASE_URL: "/", MODE: "production", DEV: false, PROD: true, SSR: true };
 const WORK_DIR_NAME = "project";
 const WORK_DIR = `/home/${WORK_DIR_NAME}`;
 const MODIFICATIONS_TAG_NAME = "bolt_file_modifications";
@@ -379,7 +380,7 @@ const DEFAULT_PROVIDER = PROVIDER_LIST[0];
 const staticModels = PROVIDER_LIST.map((p) => p.staticModels).flat();
 let MODEL_LIST = [...staticModels];
 const getOllamaBaseUrl = () => {
-  const defaultBaseUrl = "http://localhost:11434";
+  const defaultBaseUrl = define_import_meta_env_default.OLLAMA_API_BASE_URL || "http://localhost:11434";
   if (typeof window !== "undefined") {
     return defaultBaseUrl;
   }
@@ -403,11 +404,11 @@ async function getOllamaModels() {
 }
 async function getOpenAILikeModels() {
   try {
-    const baseUrl = "";
+    const baseUrl = define_import_meta_env_default.OPENAI_LIKE_API_BASE_URL || "";
     if (!baseUrl) {
       return [];
     }
-    const apiKey = "";
+    const apiKey = define_import_meta_env_default.OPENAI_LIKE_API_KEY ?? "";
     const response = await fetch(`${baseUrl}/models`, {
       headers: {
         Authorization: `Bearer ${apiKey}`
@@ -440,7 +441,7 @@ async function getOpenRouterModels() {
 }
 async function getLMStudioModels() {
   try {
-    const baseUrl = "http://localhost:1234";
+    const baseUrl = define_import_meta_env_default.LMSTUDIO_API_BASE_URL || "http://localhost:1234";
     const response = await fetch(`${baseUrl}/v1/models`);
     const data = await response.json();
     return data.data.map((model) => ({
@@ -1907,7 +1908,7 @@ const loader$1 = () => json({});
 function Index() {
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col h-full w-full", children: [
     /* @__PURE__ */ jsx(Header, {}),
-    /* @__PURE__ */ jsx("div", { suppressHydrationWarning: true, children: /* @__PURE__ */ jsx(ClientOnly, { fallback: /* @__PURE__ */ jsx(BaseChat, {}), children: () => /* @__PURE__ */ jsx(Chat, {}) }) })
+    /* @__PURE__ */ jsx(ClientOnly, { fallback: /* @__PURE__ */ jsx(BaseChat, {}), children: () => /* @__PURE__ */ jsx(Chat, {}) })
   ] });
 }
 
@@ -1928,7 +1929,7 @@ const route5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   loader
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const serverManifest = {'entry':{'module':'/h5/assets/entry.client-DWrhDfeJ.js','imports':['/h5/assets/components-70CfOzzp.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/root-BJ6H5O9t.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js'],'css':['/h5/assets/root-JKr2opdj.css']},'routes/_index - Copy':{'id':'routes/_index - Copy','parentId':'root','path':undefined,'index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/_index - Copy-DeCUVWrz.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js'],'css':['/h5/assets/Header-D_NZK3VS.css']},'routes/api.enhancer':{'id':'routes/api.enhancer','parentId':'root','path':'api/enhancer','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.enhancer-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.models':{'id':'routes/api.models','parentId':'root','path':'api/models','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.models-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.chat':{'id':'routes/api.chat','parentId':'root','path':'api/chat','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/api.chat-l0sNRNKZ.js','imports':[],'css':[]},'routes/chat.$id':{'id':'routes/chat.$id','parentId':'root','path':'chat/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/chat._id-Dwg7_DhF.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js','/h5/assets/_index-DrKxFK0h.js'],'css':['/h5/assets/Header-D_NZK3VS.css']},'routes/_index':{'id':'routes/_index','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'/h5/assets/_index-DrKxFK0h.js','imports':['/h5/assets/components-70CfOzzp.js','/h5/assets/theme-0wNRSNMZ.js','/h5/assets/Header-WUn8HWkA.js'],'css':['/h5/assets/Header-D_NZK3VS.css']}},'url':'/h5/assets/manifest-61fc74b1.js','version':'61fc74b1'};
+const serverManifest = {'entry':{'module':'assets/entry.client-DWrhDfeJ.js','imports':['assets/components-70CfOzzp.js'],'css':[]},'routes':{'root':{'id':'root','parentId':undefined,'path':'','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/root-DMgASxUN.js','imports':['assets/components-70CfOzzp.js','assets/theme-0wNRSNMZ.js'],'css':['assets/root-JKr2opdj.css']},'routes/_index - Copy':{'id':'routes/_index - Copy','parentId':'root','path':undefined,'index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/_index - Copy-Bf5ZG3aU.js','imports':['assets/components-70CfOzzp.js','assets/theme-0wNRSNMZ.js','assets/Header-Ck9tgVG2.js'],'css':['assets/Header-D_NZK3VS.css']},'routes/api.enhancer':{'id':'routes/api.enhancer','parentId':'root','path':'api/enhancer','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/api.enhancer-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.models':{'id':'routes/api.models','parentId':'root','path':'api/models','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/api.models-l0sNRNKZ.js','imports':[],'css':[]},'routes/api.chat':{'id':'routes/api.chat','parentId':'root','path':'api/chat','index':undefined,'caseSensitive':undefined,'hasAction':true,'hasLoader':false,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/api.chat-l0sNRNKZ.js','imports':[],'css':[]},'routes/chat.$id':{'id':'routes/chat.$id','parentId':'root','path':'chat/:id','index':undefined,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/chat._id-DRq28q3e.js','imports':['assets/components-70CfOzzp.js','assets/theme-0wNRSNMZ.js','assets/Header-Ck9tgVG2.js','assets/_index-Bf5ZG3aU.js'],'css':['assets/Header-D_NZK3VS.css']},'routes/_index':{'id':'routes/_index','parentId':'root','path':undefined,'index':true,'caseSensitive':undefined,'hasAction':false,'hasLoader':true,'hasClientAction':false,'hasClientLoader':false,'hasErrorBoundary':false,'module':'assets/_index-Bf5ZG3aU.js','imports':['assets/components-70CfOzzp.js','assets/theme-0wNRSNMZ.js','assets/Header-Ck9tgVG2.js'],'css':['assets/Header-D_NZK3VS.css']}},'url':'assets/manifest-5c0eef1b.js','version':'5c0eef1b'};
 
 /**
        * `mode` is only relevant for the old Remix compiler but
@@ -1939,7 +1940,7 @@ const serverManifest = {'entry':{'module':'/h5/assets/entry.client-DWrhDfeJ.js',
       const basename = "/";
       const future = {"v3_fetcherPersist":true,"v3_relativeSplatPath":true,"v3_throwAbortReason":true,"unstable_singleFetch":false,"unstable_fogOfWar":false};
       const isSpaMode = false;
-      const publicPath = "/h5/";
+      const publicPath = "";
       const entry = { module: entryServer };
       const routes = {
         "root": {
