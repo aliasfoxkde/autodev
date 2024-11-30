@@ -7,7 +7,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig((config) => {
   return {
-    build: {
+    base: '/',
+	build: {
       target: 'esnext',
     },
     plugins: [
