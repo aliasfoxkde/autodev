@@ -22,29 +22,29 @@ export function getAPIKey(cloudflareEnv: Env, provider: string, userApiKeys?: Re
   // Retrieve the API key based on the provider
   switch (provider) {
     case 'Anthropic':
-      return getEnvVar('ANTHROPIC_API_KEY');
+      return getEnvVar('VITE_ANTHROPIC_API_KEY');
     case 'OpenAI':
-      return getEnvVar('OPENAI_API_KEY');
+      return getEnvVar('VITE_OPENAI_API_KEY');
     case 'Google':
-      return getEnvVar('GOOGLE_GENERATIVE_AI_API_KEY');
+      return getEnvVar('VITE_GOOGLE_GENERATIVE_AI_API_KEY');
     case 'Groq':
-      return getEnvVar('GROQ_API_KEY');
+      return getEnvVar('VITE_GROQ_API_KEY');
     case 'HuggingFace':
-      return getEnvVar('HuggingFace_API_KEY');
+      return getEnvVar('VITE_HuggingFace_API_KEY');
     case 'OpenRouter':
-      return getEnvVar('OPEN_ROUTER_API_KEY');
+      return getEnvVar('VITE_OPEN_ROUTER_API_KEY');
     case 'Deepseek':
-      return getEnvVar('DEEPSEEK_API_KEY');
+      return getEnvVar('VITE_DEEPSEEK_API_KEY');
     case 'Mistral':
-      return getEnvVar('MISTRAL_API_KEY');
+      return getEnvVar('VITE_MISTRAL_API_KEY');
     case 'OpenAILike':
-      return getEnvVar('OPENAI_LIKE_API_KEY');
+      return getEnvVar('VITE_OPENAI_LIKE_API_KEY');
     case 'xAI':
-      return getEnvVar('XAI_API_KEY');
+      return getEnvVar('VITE_XAI_API_KEY');
     case 'Cohere':
-      return getEnvVar('COHERE_API_KEY');
+      return getEnvVar('VITE_COHERE_API_KEY');
     case 'AzureOpenAI':
-      return getEnvVar('AZURE_OPENAI_API_KEY');
+      return getEnvVar('VITE_AZURE_OPENAI_API_KEY');
     default:
       return '';
   }
