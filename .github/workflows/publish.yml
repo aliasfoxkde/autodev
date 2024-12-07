@@ -28,7 +28,6 @@ jobs:
           npm install -g pnpm
           pnpm install
 
-      Step 6: Builds the project
       - name: Build project
         run: |
           pnpm run build
