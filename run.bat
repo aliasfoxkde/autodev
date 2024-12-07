@@ -1,3 +1,4 @@
 @echo off
 set NODE_TLS_REJECT_UNAUTHORIZED=0
-pnpm run dev --host
+REM pnpm run dev --host
+pnpm run dev
