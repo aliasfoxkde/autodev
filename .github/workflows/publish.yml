@@ -1,0 +1,30 @@
+name: Build and Publish to Cloudflare Pages
+on:
+  push:
+    branches: main # modify the value if needed
+jobs:
+  sync_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          
+      - name: Set up Git
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          
+      - name: Install dependencies
+        run: |
+          rm -rf node_modules
+          rm pnpm-lock.yaml
+          npm install -g pnpm
+          pnpm install
+
+      Step 6: Builds the project
+      - name: Build project
+        run: |
+          pnpm run build
