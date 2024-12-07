@@ -3,9 +3,13 @@ on:
   push:
     branches: main # modify the value if needed
 jobs:
-  sync_and_deploy:
+  build_and_publish:
+    timeout-minutes: 10 # modify the value if needed
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      deployments: write
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
