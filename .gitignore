@@ -31,7 +31,6 @@ dist-ssr
 *.vars
 .wrangler
 _worker.bundle
-wrangler.toml
 
 Modelfile
 modelfiles
